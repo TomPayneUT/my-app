@@ -68,8 +68,8 @@ function App() {
 
         {colors.map(color => (
           <li key={color.id}>
-          <a href="#" onClick={() => handleDelete(color.id)}>del</a>
-          <a href="#" onClick={() => handleEdit(color.id)}>edit</a> <Dot color={color.value} /> {color.name}
+          <a href="#" onClick={() => handleDelete(color.id)}>del</a> - 
+           <a href="#" onClick={() => handleEdit(color.id)}>edit</a> <Dot color={color.value} /> {color.name}
           </li>
         ))}
 
