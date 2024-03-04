@@ -18,14 +18,14 @@ const Dot = ({color}) => {
 
 
 function App() {
-  const [colors, setColors] = useState([]);
+  const [tasks, setTasks] = useState([]);
 
   //console.log(colors);
 
   useEffect(
     () =>
-      onSnapshot(collection(db, "colors"), (snapshot) => 
-        setColors(snapshot.docs.map(doc => ({...doc.data(), id: doc.id})))
+      onSnapshot(collection(db, "tasks"), (snapshot) => 
+        setTasks(snapshot.docs.map(doc => ({...doc.data(), id: doc.id})))
       ),
       []
   )
@@ -36,46 +36,48 @@ function App() {
   //  await setDoc(docRef, payload)  //setDoc will create the item if non-exist, OR overwrite that ID : => best for updating existing
     // ... await won't run the following code until the await func completes
 
-    const name = prompt("Color name ");
-    const value = prompt("Hex code ");
+    const name = prompt("Task name ");
+    const priority = prompt("Priority ");
 
-    const collectionRef = collection(db, "colors");
-    const payload = {name: name, value: value}
+    const collectionRef = collection(db, "tasks");
+    const payload = {name: name, priority: priority}
     const docRef = await addDoc(collectionRef, payload) //setDoc uses a docRef... addDoc uses a collectionRef
 
   }
 
   const handleEdit = async (id) => {
-    const name = prompt("Color name ");
-    const value = prompt("Hex code ");
+    const name = prompt("Task name ");
+    const priority = prompt("Priority ");
 
-    const docRef = doc(db, "colors", id);  //firestore, collectionName, docId
-    const payload = { name, value }; //ES6 shortcut for {name: name, value: value}
+    const docRef = doc(db, "tasks", id);  //firestore, collectionName, docId
+    const payload = { name, priority }; //ES6 shortcut for {name: name, value: value}
     await setDoc(docRef, payload)  //setDoc will create the item if non-exist, OR overwrite that ID : => best for updating existing
     // ... await won't run the following code until the await func completes
   };
 
   const handleDelete = async (id) => {
-    const docRef = doc(db, "colors", id);
+    const docRef = doc(db, "tasks", id);
     await deleteDoc(docRef)
   }
 
   return (
     <div className="App">
-      <h3>Colors</h3>
-      <button onClick={handleNew}>New</button>
-      <ul>
+      <h3>Tasks</h3>
+      
+      <table>
 
-        {colors.map(color => (
-          <li key={color.id}>
-          <a href="#" onClick={() => handleDelete(color.id)}>del</a> - 
-           <a href="#" onClick={() => handleEdit(color.id)}>edit</a> <Dot color={color.value} /> {color.name}
-          </li>
+        {tasks.map(task => (
+          <tr key={task.id}>
+            <td><a href="#" onClick={() => handleDelete(task.id)}>del</a></td> 
+            <td><a href="#" onClick={() => handleEdit(task.id)}>edit</a></td>
+            <td> {task.priority}</td>
+            <td> {task.name}</td>
+          </tr>
         ))}
 
+        <tr><button onClick={handleNew}>New Task</button></tr>
         
-        
-      </ul>
+      </table>
     </div>
   );
 }
